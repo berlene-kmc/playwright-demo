@@ -30,8 +30,7 @@ export default defineConfig({
     viewport: { width: 3840, height: 2160 },
     launchOptions: {
       args: [
-        '--window-position=0,-1440',
-        '--window-size=2560,1440'
+
       ]
     },
 
@@ -41,7 +40,8 @@ export default defineConfig({
     // baseURL: 'http://localhost:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry'
+    // trace: 'on-first-retry'
+    trace: 'on',
   },
 
   /* Configure projects for major browsers */
