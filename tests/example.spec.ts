@@ -1,28 +1,26 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '@playwright/test';
+import { PlaywrightDevPage } from '../page-object-model/pages/playwright-dev-page';
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/')
+test('getting started should contain table of contents', async ({ page }) => {
+  const playwrightDev = new PlaywrightDevPage(page);
+  await playwrightDev.goto();
+  await playwrightDev.getStarted();
+  await expect(playwrightDev.tocList).toHaveText([
+    `How to install Playwright`,
+    `What's Installed`,
+    `How to run the example test`,
+    `How to open the HTML test report`,
+    `Write tests using web first assertions, page fixtures and locators`,
+    `Run single test, multiple tests, headed mode`,
+    `Generate tests with Codegen`,
+    `See a trace of your tests`
+  ]);
+});
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/)
-  await page.pause()
-})
-
-test('get started link', async ({ page }) => {
-  await page.goto('https://www.nuls-moa.com/')
-  await page.waitForTimeout(3000)
-  // Click the get started link.
-  // await page.getByText(/Sign up here/i).click()
-
-  // Expects page to have a heading with the name of Installation.
-  // await expect(page.getByRole('heading', { name: 'Create an Account' })).toBeVisible()
-  // await page.pause()
-  await page.fill('input[name="email"]', 'bernabebf@students.nu-moa.edu.ph')
-  await page.fill('input[name="password"]', 'Mikmik1224!')
-  await page.click('button[type="submit"]')
-  await expect(page.getByRole('heading', { name: 'National University Laboratory System' })).toBeVisible() // Header
-  await page.getByRole('button', { name: 'OK' }).click() // Ant Design Modal
-  await page.getByRole('menuitem', { name: /Sign Out/i }).click() // Nar bar
-  await page.getByRole('button', { name: 'Yes, Sign Out' }).click()
-  await page.pause()
-})
+test('should show Page Object Model article', async ({ page }) => {
+  const playwrightDev = new PlaywrightDevPage(page);
+  await playwrightDev.goto();
+  await playwrightDev.pageObjectModel();
+  await expect(page.locator('article')).toContainText('Page Object Model is a common pattern');
+  await page.pause();
+});

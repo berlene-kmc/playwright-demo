@@ -29,8 +29,14 @@ async checkHeaderVisible() {
   await expect(this.header).toBeVisible({ timeout: 15000 });
 }
 
+//   async closeModal() {
+//     await this.okButton.click();
+//   }
+
   async closeModal() {
-    await this.okButton.click();
+    if (await this.okButton.isVisible({ timeout: 2000 })) {
+      await this.okButton.click();
+    }
   }
 
   async goToInventory() {

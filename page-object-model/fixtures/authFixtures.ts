@@ -10,10 +10,11 @@ type AuthFixtures = {
 export const test = baseTest.extend<AuthFixtures>({
   loginPage: async ({ page }, use) => {
     const loginPage = new LoginPage(page);
-    await use(loginPage);
+    await use(loginPage); // Same function with return
   },
+
   dashboard: async ({ page }, use) => {
     const dashboard = new Dashboard(page);
-    await use(dashboard);
+    await use(dashboard); // Same function with return
   },
 });
