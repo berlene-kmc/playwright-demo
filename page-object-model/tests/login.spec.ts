@@ -11,5 +11,7 @@ test('login and signout', async ({ page }) => {
   await page.waitForLoadState('networkidle');
   await dashboard.checkHeaderVisible();
   await dashboard.closeModal();
+  await dashboard.goToInventory();
+  await page.pause();
   await dashboard.signOut();
 });
