@@ -1,17 +1,13 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage } from '../pages/LoginPage';
-import { Dashboard } from '../pages/Dashboard';
+import { test } from '../fixtures/authFixtures';
+import { expect } from '@playwright/test';
 
-test('login and signout', async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const dashboard = new Dashboard(page);
-
+test('login and signout', async ({ loginPage, dashboard }) => {
   await loginPage.goto();
   await loginPage.login('bernabebf@students.nu-moa.edu.ph', 'Mikmik1224!');
-  await page.waitForLoadState('networkidle');
+
   await dashboard.checkHeaderVisible();
   await dashboard.closeModal();
   await dashboard.goToInventory();
-  await page.pause();
+  await dashboard.page.pause();
   await dashboard.signOut();
 });

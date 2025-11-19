@@ -26,7 +26,7 @@ async checkHeaderVisible() {
     await this.okButton.click();
   }
 
-  await expect(this.header).toBeVisible({ timeout: 10000 });
+  await expect(this.header).toBeVisible({ timeout: 15000 });
 }
 
   async closeModal() {
