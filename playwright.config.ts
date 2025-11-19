@@ -25,7 +25,7 @@ export default defineConfig({
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    headless: false,
+    headless: process.env.CI ? true : false, 
     viewport: { width: 3840, height: 2160 },
     launchOptions: {
       args: [
