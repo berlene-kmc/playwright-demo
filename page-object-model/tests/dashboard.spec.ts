@@ -3,20 +3,21 @@ import { expect } from '@playwright/test';
 
 test.describe('Dashboard Tests', () => {
 
-  test.beforeEach(async ({ loginPage, dashboard }) => {
-    await loginPage.goto();
-    await loginPage.login('bernabebf@students.nu-moa.edu.ph', 'Mikmik1224!');
-    await dashboard.checkHeaderVisible();
-    await dashboard.closeModal();
-  });
+  test('Open user profile and check dashboard button', async ({ dashboard }) => {
+    console.log('Test started');
 
-  test.afterEach(async ({ dashboard }) => {
-    await dashboard.signOut();
-  });
+    await dashboard.goto();
 
-  test('Navigate to Inventory', async ({ dashboard }) => {
-    await dashboard.goToInventory();
-    await expect(dashboard.inventoryButton).toBeVisible();
+    await expect(dashboard.solutionsDropdown).toBeVisible();
+    await dashboard.solutionsDropdown.click();
+    await dashboard.meetingRoomsButton.click({ force: true });
+    await dashboard.getStartedButton.click();
+    await dashboard.boardRoom.click();
+
+    // const boardRoom = dashboard.getBoardRoom();
+    // await expect(boardRoom).toBeVisible();
+    // await boardRoom.scrollIntoViewIfNeeded();
+    // await boardRoom.click();
   });
 
 });

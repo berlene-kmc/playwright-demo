@@ -1,63 +1,45 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
 
 export class Dashboard {
-  readonly page: Page;
+  public page: Page;
+  public solutionsDropdown: Locator;
+  public meetingRoomsButton: Locator;
+  public getStartedButton: Locator;
+  public boardRoom: Locator;
 
   constructor(page: Page) {
     this.page = page;
+
+    this.solutionsDropdown = page.locator(
+      '//button[.//span[contains(text(), "Solutions")]]'
+    );
+
+    this.meetingRoomsButton = page.locator(
+      '//a[@href="/meeting-room" and .//span[contains(normalize-space(), "Meeting Rooms")]]'
+    );
+
+    this.getStartedButton = page.locator(
+      '//div[@class="mt-8"]'
+    );
+
+    this.boardRoom = page.locator(
+      '//button[contains(.,\'Get Started\')]',
+    ).nth(1);
   }
 
-  get header(): Locator {
-    return this.page.getByRole('heading', { name: 'National University Laboratory System' });
+  async goto() {
+    await this.page.goto('https://alpha-hub.kmc.solutions/');
   }
 
-  get okButton(): Locator {
-    return this.page.getByRole('button', { name: 'OK' });
-  }
+  // getBoardRoom(): Locator {
+  //   return this.page.locator('div.flex.flex-col', { 
+  //     has: this.page.locator('span', { hasText: 'Boardroom' })
+  //   }).getByRole('button', { name: 'Get Started' }).nth(1);
+  // }
 
-  get adminButton(): Locator {
-    return this.page.getByText('Admin Panel', { exact: true });
-  }
-
-  get inventoryButton(): Locator {
-    return this.page.getByText('Inventory', { exact: true });
-  }
-
-  get signOutMenuItem(): Locator {
-    return this.page.getByRole('menuitem', { name: /Sign Out/i });
-  }
-
-  get confirmSignOutButton(): Locator {
-    return this.page.getByRole('button', { name: 'Yes, Sign Out' });
-  }
-
-  async checkHeaderVisible() {
-    // await this.page.waitForLoadState('networkidle');
-    await this.page.waitForLoadState('load');
-
-    if (await this.okButton.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await this.okButton.click();
-    }
-
-    await expect(this.header).toBeVisible({ timeout: 15000 });
-  }
-
-  async closeModal() {
-    if (await this.okButton.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await this.okButton.click();
-    }
-  }
-
-  async goToInventory() {
-    await this.adminButton.click();
-    await expect(this.inventoryButton).toBeVisible({ timeout: 10000 });
-    await this.inventoryButton.click();
-    // await this.page.waitForLoadState('networkidle');
-    await this.page.waitForLoadState('load');
-  }
-
-  async signOut() {
-    await this.signOutMenuItem.click();
-    await this.confirmSignOutButton.click();
-  }
+  // async goToBoardroomLocation() {
+  //   await this.goto();
+  //   await this.solutionsDropdown.click();
+  //   await this.getBoardRoom().click();
+  // }
 }

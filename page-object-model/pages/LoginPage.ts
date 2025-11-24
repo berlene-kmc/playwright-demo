@@ -1,4 +1,4 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Page, expect, Locator } from '@playwright/test';
 
 export class LoginPage {
   readonly page: Page;
@@ -8,13 +8,22 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.emailInput = page.locator('input[name="email"]');
-    this.passwordInput = page.locator('input[name="password"]');
-    this.submitButton = page.locator('button[type="submit"]');
+
+    this.emailInput = page.locator(
+      '//form//input[@type="email" or contains(@placeholder, "mail") or @name="email"]'
+    );
+
+    this.passwordInput = page.locator(
+      '//input[@id="password"]',
+    );
+
+    this.submitButton = page.locator(
+      '//button[@type="submit"]',
+    );
   }
 
   async goto() {
-    await this.page.goto('https://www.nuls-moa.com/');
+    await this.page.goto('https://kmc-hub-git-feat-new-checkout-kmc-dev-team.vercel.app/auth/login');
   }
 
   async login(email: string, password: string) {
