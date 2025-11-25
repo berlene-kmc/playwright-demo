@@ -1,26 +1,55 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 
 export class RoomSelection {
-  readonly page: Page;
-  readonly boardroomCard: Locator;
+  public page: Page;
+  public dateInput: Locator;
+  public timeInput: Locator;
+  public boardroomCard: Locator;
+  public continueButton: Locator;
+  public agreeButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.boardroomCard = page.getByText('9F - BOARDROOM', { exact: true });
+
+    this.dateInput = page.locator(
+      '//input[@id="input-date"]'
+    );
+
+    this.timeInput = page.locator(
+      '//div[@id="timeSlot-04:00 AM"]'
+    );
+    
+    this.boardroomCard = page.locator(
+      '//span[contains(text(), "MEDIUM ROOM FOR 8 PAX")]'
+    );
+
+    this.continueButton = page.locator(
+      '//button[contains(text(), "Continue")]'
+    );
+
+    this.agreeButton = page.locator(
+      '//a[@id="hs-eu-confirmation-button" and contains(text(), "Accept")]'
+    );
   }
 
   async goto() {
     await this.page.goto(
-      'https://kmc-hub-git-feat-new-checkout-kmc-dev-team.vercel.app/products/board-room/6/room-selection'
+      'https://alpha-hub.kmc.solutions/guest-booking/3?bsid=26'
     );
   }
 
-  async selectBoardroom() {
-    await this.boardroomCard.click();
+  async selectDate(date: string) {
+    await this.dateInput.fill('');
+    await this.dateInput.fill(date);
   }
 
-  async selectTimeSlot(time: string) {
-    const slot = this.page.locator(`.rbc-event:has-text("${time}")`);
-    await slot.click();
+  async locationInformation() {
+    await this.goto();
+    await this.selectDate('2025-11-27');
+    await expect(this.dateInput).toHaveValue('2025-11-27');
+    await this.timeInput.click();
+    await this.agreeButton.click();
+    await this.boardroomCard.click();
+    await this.continueButton.click(); 
   }
 }

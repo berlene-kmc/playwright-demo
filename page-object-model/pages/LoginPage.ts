@@ -10,7 +10,7 @@ export class LoginPage {
     this.page = page;
 
     this.emailInput = page.locator(
-      '//form//input[@type="email" or contains(@placeholder, "mail") or @name="email"]'
+      '//input[@type="email" or contains(@placeholder, "mail") or @name="email"]'
     );
 
     this.passwordInput = page.locator(

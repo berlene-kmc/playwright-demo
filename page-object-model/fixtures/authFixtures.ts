@@ -3,12 +3,14 @@ import { LoginPage } from '../pages/LoginPage';
 import { Dashboard } from '../pages/Dashboard';
 import { Location } from '../pages/Location';
 import { RoomSelection } from '../pages/RoomSelection';   
+import { Billing } from '../pages/Billing';
 
 type AuthFixtures = {
   loginPage: LoginPage;
   dashboard: Dashboard;
   location: Location; 
   roomSelection: RoomSelection;           
+  billing: Billing;          
 };
 
 export const test = baseTest.extend<AuthFixtures>({
@@ -30,5 +32,10 @@ export const test = baseTest.extend<AuthFixtures>({
   roomSelection: async ({ page }, use) => {
     const roomSelection = new RoomSelection(page);
     await use(roomSelection); // Same function with return
+  },
+
+  billing: async ({ page }, use) => {
+    const billing = new Billing(page);
+    await use(billing); // Same function with return
   }
 });

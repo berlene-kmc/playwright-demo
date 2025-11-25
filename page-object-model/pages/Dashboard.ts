@@ -37,9 +37,11 @@ export class Dashboard {
   //   }).getByRole('button', { name: 'Get Started' }).nth(1);
   // }
 
-  // async goToBoardroomLocation() {
-  //   await this.goto();
-  //   await this.solutionsDropdown.click();
-  //   await this.getBoardRoom().click();
-  // }
+  async goToBoardroomLocation() {
+    await this.goto();
+    await this.solutionsDropdown.click();
+    await this.meetingRoomsButton.click({ force: true });
+    await this.getStartedButton.click();
+    await this.boardRoom.click();
+  }
 }
