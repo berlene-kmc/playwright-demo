@@ -181,13 +181,13 @@ export class RoomSelection {
 
       const data = await response.json();
 
-      console.log(chalk.cyan('🔍 Room availability API response:'), data);
+      console.log(chalk.cyan('Room availability API response:'), data);
 
       if (!data) {
         throw new Error('Room availability API response is empty or invalid');
       }
 
-      console.log(chalk.green('✅ Room availability API returned valid data'));
+      console.log(chalk.green('Room availability API returned valid data'));
 
     } catch (e: any) {
       throw new Error(chalk.red(`Error verifying room availability: ${e.message}`));
@@ -206,13 +206,13 @@ export class RoomSelection {
 
       const data = await response.json();
 
-      console.log(chalk.cyan('🔍 Boardroom availability API response:'), data);
+      console.log(chalk.cyan('Boardroom availability API response:'), data);
 
       if (!data) {
         throw new Error('Boardroom availability API response is empty or invalid');
       }
 
-      console.log(chalk.green('✅ Boardroom availability API returned valid data'));
+      console.log(chalk.green('Boardroom availability API returned valid data'));
 
     } catch (e: any) {
       throw new Error(chalk.red(`Error verifying boardroom availability: ${e.message}`));
@@ -237,7 +237,7 @@ export class RoomSelection {
 
       console.log(chalk.green('🎉 Reservation Flow Completed Successfully'));
 
-      await this.page.pause();
+      // await this.page.pause();
 
     } catch (e: any) {
       throw new Error(chalk.red(`Error completing reservation flow: ${e.message}`));

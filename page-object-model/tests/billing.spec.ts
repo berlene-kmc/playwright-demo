@@ -32,31 +32,38 @@
 // Complex Version
 import { test } from '../fixtures/authFixtures';
 import { Billing, BillingData } from '../pages/Billing';
+import { RoomSelection } from '../pages/RoomSelection';
 
-test('fill billing form', async ({ dashboard, location, roomSelection, page }) => {
+test('fill billing form', async ({ dashboard, location, page }) => {
   const billing = new Billing(page);
   
-  // await dashboard.goToBoardroomLocation();
+  await dashboard.goToBoardroomLocation();
   // await location.clickPicadillyStarCard();
+  const [newPage] = await Promise.all([
+  page.context().waitForEvent('page'),
+  location.clickPicadillyStarCard()   
+]);
   // await roomSelection.completeReservationFlow("berlenebernabe12@gmail.com");
+  const roomSelection = new RoomSelection(newPage);
+  await roomSelection.completeReservationFlow("berlenebernabe12@gmail.com");
 
-  await billing.goto();
+  // await billing.goto();
 
-  const data: BillingData = {
-    meetingPurpose: 'Team Meeting',
-    firstName: 'John',
-    lastName: 'Doe',
-    tin: '123456789',
-    email: 'john.doe@example.com',
-    phone: '09123456789',
-    address: '123 Main St',
-    city: 'Makati',
-    state: 'Metro Manila',
-    country: 'Philippines',
-    zip: '1234',
-    agreeTerms: true
-  };
+  // const data: BillingData = {
+  //   meetingPurpose: 'Team Meeting',
+  //   firstName: 'John',
+  //   lastName: 'Doe',
+  //   tin: '123456789',
+  //   email: 'john.doe@example.com',
+  //   phone: '09123456789',
+  //   address: '123 Main St',
+  //   city: 'Makati',
+  //   state: 'Metro Manila',
+  //   country: 'Philippines',
+  //   zip: '1234',
+  //   agreeTerms: true
+  // };
 
-  await billing.fillBillingForm(data);
+  // await billing.fillBillingForm(data);
 //   await billing.clickContinue();
 });

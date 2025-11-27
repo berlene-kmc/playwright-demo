@@ -16,7 +16,7 @@ test.describe('Signup Tests', () => {
 
     await signup.completeSignup("berlene.bernabe@kmc.solutions", "Berlene", "Bernabe", "Software Engineer", "StrongPassword123!", "StrongPassword123!");   
 
-    await page.pause();
+    // await page.pause();
 
   });
 
