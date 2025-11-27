@@ -4,13 +4,17 @@ import { Dashboard } from '../pages/Dashboard';
 import { Location } from '../pages/Location';
 import { RoomSelection } from '../pages/RoomSelection';   
 import { Billing } from '../pages/Billing';
+import { AssertEndpoint } from '../utils/assertEndpoint';
+import {Signup} from '../pages/Signup';
 
 type AuthFixtures = {
   loginPage: LoginPage;
   dashboard: Dashboard;
   location: Location; 
   roomSelection: RoomSelection;           
-  billing: Billing;          
+  billing: Billing;     
+  assertEndpoint: AssertEndpoint;    
+  signUp: Signup;
 };
 
 export const test = baseTest.extend<AuthFixtures>({
@@ -37,5 +41,15 @@ export const test = baseTest.extend<AuthFixtures>({
   billing: async ({ page }, use) => {
     const billing = new Billing(page);
     await use(billing); // Same function with return
+  },
+
+  assertEndpoint: async ({ page }, use) => {   
+    const assertEndpoint = new AssertEndpoint(page);
+    await use(assertEndpoint); 
+  }, 
+
+  signUp: async ({ page }, use) => {  
+    const signUp = new Signup(page);
+    await use(signUp); 
   }
 });

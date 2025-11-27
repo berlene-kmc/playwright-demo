@@ -36,9 +36,11 @@ import { Billing, BillingData } from '../pages/Billing';
 test('fill billing form', async ({ dashboard, location, roomSelection, page }) => {
   const billing = new Billing(page);
   
-  await dashboard.goToBoardroomLocation();
-  await location.picadillyStarCard.click();
-  await roomSelection.locationInformation();
+  // await dashboard.goToBoardroomLocation();
+  // await location.clickPicadillyStarCard();
+  // await roomSelection.completeReservationFlow("berlenebernabe12@gmail.com");
+
+  await billing.goto();
 
   const data: BillingData = {
     meetingPurpose: 'Team Meeting',

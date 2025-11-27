@@ -1,55 +1,246 @@
 import { Page, Locator, expect } from '@playwright/test';
+import chalk from 'chalk';
 
 export class RoomSelection {
-  public page: Page;
-  public dateInput: Locator;
-  public timeInput: Locator;
-  public boardroomCard: Locator;
-  public continueButton: Locator;
-  public agreeButton: Locator;
+  private page: Page;
+  private dateInput: Locator;
+  private timeInput: Locator;
+  private boardroomCard: Locator;
+  private agreeButton: Locator;
+  private confirmButton: Locator;
+  private checkoutButton: Locator;
+  private emailInput: Locator;
+  private continueButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
 
-    this.dateInput = page.locator(
-      '//input[@id="input-date"]'
-    );
+    this.dateInput = page.locator('//button[contains(text(), "30")]').nth(1);
 
     this.timeInput = page.locator(
-      '//div[@id="timeSlot-04:00 AM"]'
-    );
-    
-    this.boardroomCard = page.locator(
-      '//span[contains(text(), "MEDIUM ROOM FOR 8 PAX")]'
-    );
+      '//div[contains(@class, "cursor-pointer") and contains(@class, "h-[48px]")]'
+    ).nth(24);
 
-    this.continueButton = page.locator(
-      '//button[contains(text(), "Continue")]'
-    );
+    this.boardroomCard = page.locator(
+      '//figcaption//p[contains(normalize-space(.), "BOARDROOM")]'
+    ).nth(0);
 
     this.agreeButton = page.locator(
       '//a[@id="hs-eu-confirmation-button" and contains(text(), "Accept")]'
     );
-  }
 
-  async goto() {
-    await this.page.goto(
-      'https://alpha-hub.kmc.solutions/guest-booking/3?bsid=26'
+    this.confirmButton = page.locator(
+      '//button[contains(text(), "Confirm Reservation")]'
+    );
+
+    this.checkoutButton = page.locator(
+      '//button[contains(text(), "Proceed to Checkout")]'
+    );
+
+    this.emailInput = page.locator(
+      '//input[@id="email"]'
+    );
+
+    this.continueButton = page.locator(  
+      '//button[contains(text(), "Continue to Checkout")]'
     );
   }
 
-  async selectDate(date: string) {
-    await this.dateInput.fill('');
-    await this.dateInput.fill(date);
+  async goto() {
+    try {
+      await this.page.goto(
+        'https://kmc-hub-git-feat-new-checkout-kmc-dev-team.vercel.app/products/board-room/3/room-selection'
+      );
+
+      console.log(chalk.green('✅ Navigated to Room Selection page'));
+      
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error navigating to Room Selection: ${e.message}`));
+    }
   }
 
-  async locationInformation() {
-    await this.goto();
-    await this.selectDate('2025-11-27');
-    await expect(this.dateInput).toHaveValue('2025-11-27');
-    await this.timeInput.click();
-    await this.agreeButton.click();
-    await this.boardroomCard.click();
-    await this.continueButton.click(); 
+  async clickAgreeButton() {
+    try {
+      await expect(this.agreeButton).toBeVisible({ timeout: 10000 });
+      await this.agreeButton.click();
+      console.log(chalk.green('✅ Clicked Accept Cookies'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error clicking Accept button: ${e.message}`));
+    }
+  }
+
+  async clickBoardroomCard() {
+    try {
+      await expect(this.boardroomCard).toBeVisible({ timeout: 10000 });
+      await this.boardroomCard.click();
+      console.log(chalk.green('✅ Selected BOARDROOM card'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error clicking Boardroom card: ${e.message}`));
+    }
+  }
+
+  async clickDate() {
+    try {
+      await expect(this.dateInput).toBeVisible();
+      await this.dateInput.click();
+      console.log(chalk.green('✅ Selected Date'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error selecting date: ${e.message}`));
+    }
+  }
+
+  async clickTime() {
+    try {
+      await expect(this.timeInput).toBeVisible();
+      await this.timeInput.click();
+      console.log(chalk.green('✅ Selected Time Slot'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error selecting time: ${e.message}`));
+    }
+  }
+
+  async clickConfirmReservation() {
+    try {
+      await expect(this.confirmButton).toBeVisible();
+      await this.confirmButton.click();
+      console.log(chalk.green('✅ Clicked Confirm Reservation'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error confirming reservation: ${e.message}`));
+    }
+  }
+
+  async clickProceedToCheckout() {
+    try {
+      await expect(this.checkoutButton).toBeVisible();
+      await this.checkoutButton.click();
+      console.log(chalk.green('✅ Clicked Proceed to Checkout'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error clicking Proceed to Checkout: ${e.message}`));
+    }
+  }
+
+  async fillEmail(email: string) {
+    try {
+      await expect(this.emailInput).toBeVisible({ timeout: 30000 });
+      await this.emailInput.fill(email);
+      console.log(chalk.green(`✅ Filled Email: ${email}`));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error filling email: ${e.message}`));
+    }
+  }
+
+  async clickContinueButton() {
+    try {
+      await expect(this.continueButton).toBeVisible();
+      await this.continueButton.click();
+      console.log(chalk.green('✅ Clicked Continue to Checkout'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error clicking Continue to Checkout: ${e.message}`));
+    }
+  }
+
+  async verifyFavicon() {
+    try {
+      const faviconLocator = this.page.locator('link[rel="icon"][href="/favicon.ico"]');
+      await expect(faviconLocator).toHaveCount(1, { timeout: 10000 });
+
+      const isLoaded = await faviconLocator.evaluate((el: HTMLLinkElement) => {
+        return fetch(el.href, { method: 'HEAD' })
+          .then(res => res.ok)
+          .catch(() => false);
+      });
+
+      if (!isLoaded) {
+        throw new Error('Favicon is broken or failed to load.');
+      }
+
+      console.log(chalk.green('✅ Favicon loaded correctly'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error verifying favicon: ${e.message}`));
+    }
+  }
+
+  async verifyRoomAvailability() {
+    try {
+      const apiUrl = 'https://erp-hub-api-v2-new-checkout.azurewebsites.net/api/hub/meetings/rooms/56/availability?date=2025-11-28&roomId=56&dividerUnit=60';
+      
+      const response = await this.page.request.get(apiUrl);
+      
+      if (!response.ok()) {
+        throw new Error(`Room availability API returned status ${response.status()}`);
+      }
+
+      const data = await response.json();
+
+      console.log(chalk.cyan('🔍 Room availability API response:'), data);
+
+      if (!data) {
+        throw new Error('Room availability API response is empty or invalid');
+      }
+
+      console.log(chalk.green('✅ Room availability API returned valid data'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error verifying room availability: ${e.message}`));
+    }
+  }
+
+  async verifyBoardroom() {
+    try {
+      const apiUrl = 'https://erp-hub-api-v2-new-checkout.azurewebsites.net/api/hub/buildings/3/packages/board-room';    
+    
+      const response = await this.page.request.get(apiUrl);
+      
+      if (!response.ok()) {
+        throw new Error(`Boardroom availability API returned status ${response.status()}`);
+      }
+
+      const data = await response.json();
+
+      console.log(chalk.cyan('🔍 Boardroom availability API response:'), data);
+
+      if (!data) {
+        throw new Error('Boardroom availability API response is empty or invalid');
+      }
+
+      console.log(chalk.green('✅ Boardroom availability API returned valid data'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error verifying boardroom availability: ${e.message}`));
+    }
+  }
+
+  async completeReservationFlow(email: string) {
+    try {
+      console.log(chalk.blue('Starting Reservation Flow...'));
+
+      await this.verifyFavicon();
+      await this.clickAgreeButton();
+      await this.verifyBoardroom();
+      await this.clickBoardroomCard();
+      await this.verifyRoomAvailability(); 
+      await this.clickDate();
+      await this.clickTime();
+      await this.clickConfirmReservation();
+      await this.clickProceedToCheckout();
+      await this.fillEmail(email)
+      await this.clickContinueButton(); 
+
+      console.log(chalk.green('🎉 Reservation Flow Completed Successfully'));
+
+      await this.page.pause();
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error completing reservation flow: ${e.message}`));
+    }
   }
 }

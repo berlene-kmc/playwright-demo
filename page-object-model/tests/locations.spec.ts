@@ -1,21 +1,22 @@
 import { test } from '../fixtures/authFixtures';
 import { expect } from '@playwright/test';
 import { Location } from '../pages/Location';
+import { AssertEndpoint } from '../utils/assertEndpoint';
 
 test.describe('Location Page Tests', () => {
 
   test('Select Picadilly Star card', async ({ dashboard, page }) => {
     const location = new Location(page);
+    const assertEndpoint = new AssertEndpoint(page);
 
     await dashboard.goToBoardroomLocation();
-    await location.picadillyStarCard.click();
+    await location.clickPicadillyStarCard(); 
+  });
 
-    // await location.selectPicadillyStar();
+  test('Boardroom API returns list', async ({ page }) => {
+    const location = new Location(page);
 
-    // await location.selectDate("2025-11-30");
-
-    // await expect(page.locator('#input-date')).toHaveValue("2025-11-30");
-
+    await location.assertBoardRoomList();  
   });
 
 });

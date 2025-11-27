@@ -1,47 +1,78 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
+import chalk from 'chalk';
 
 export class Dashboard {
-  public page: Page;
-  public solutionsDropdown: Locator;
-  public meetingRoomsButton: Locator;
-  public getStartedButton: Locator;
-  public boardRoom: Locator;
+  private page: Page;
 
   constructor(page: Page) {
     this.page = page;
-
-    this.solutionsDropdown = page.locator(
-      '//button[.//span[contains(text(), "Solutions")]]'
-    );
-
-    this.meetingRoomsButton = page.locator(
-      '//a[@href="/meeting-room" and .//span[contains(normalize-space(), "Meeting Rooms")]]'
-    );
-
-    this.getStartedButton = page.locator(
-      '//div[@class="mt-8"]'
-    );
-
-    this.boardRoom = page.locator(
-      '//button[contains(.,\'Get Started\')]',
-    ).nth(1);
   }
 
   async goto() {
-    await this.page.goto('https://alpha-hub.kmc.solutions/');
+    await this.page.goto('https://kmc-hub-git-feat-new-checkout-kmc-dev-team.vercel.app/');
+    console.log(chalk.green('✅ Navigated to dashboard page'));
   }
 
-  // getBoardRoom(): Locator {
-  //   return this.page.locator('div.flex.flex-col', { 
-  //     has: this.page.locator('span', { hasText: 'Boardroom' })
-  //   }).getByRole('button', { name: 'Get Started' }).nth(1);
-  // }
+  async clickSolutionsDropdown() {
+    try {
+      const solutionsDropdown = this.page.locator('//button[.//span[contains(text(), "Solutions")]]');
+      await expect(solutionsDropdown).toBeVisible({ timeout: 60000 });
+      await expect(solutionsDropdown).toBeEnabled({ timeout: 60000 });
+      await solutionsDropdown.click();
+      console.log(chalk.green('✅ Clicked Solutions dropdown'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error clicking Solutions dropdown: ${e.message}`));
+    }
+  }
+
+  async clickMeetingRoomsButton() {
+    try {
+      const meetingRoomsButton = this.page.locator(
+        '//a[@href="/meeting-room" and .//span[contains(text(), "Meeting Rooms")]]'
+      );
+
+      await expect(meetingRoomsButton).toBeVisible({ timeout: 60000 });
+      await expect(meetingRoomsButton).toBeEnabled({ timeout: 60000 });
+      await meetingRoomsButton.click({ force: true });
+      console.log(chalk.green('✅ Clicked Meeting Rooms button'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error clicking Meeting Rooms button: ${e.message}`));
+    }
+  }
+
+  async clickGetStarted() {
+    try {
+      const getStartedButton = this.page.locator('//div[@class="mt-8"]');
+      await expect(getStartedButton).toBeVisible({ timeout: 60000 });
+      await expect(getStartedButton).toBeEnabled({ timeout: 60000 });
+      await getStartedButton.click();
+      console.log(chalk.green('✅ Clicked Get Started button'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error clicking Get Started button: ${e.message}`));
+    }
+  }
+
+  async clickBoardRoom() {
+    try {
+      const boardRoom = this.page.locator('//button[contains(.,\'Get Started\')]').nth(1);
+      await expect(boardRoom).toBeVisible({ timeout: 60000 });
+      await expect(boardRoom).toBeEnabled({ timeout: 60000 });
+      await boardRoom.click();
+      console.log(chalk.green('✅ Clicked Board Room button'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error clicking Board Room button: ${e.message}`));
+    }
+  }
 
   async goToBoardroomLocation() {
     await this.goto();
-    await this.solutionsDropdown.click();
-    await this.meetingRoomsButton.click({ force: true });
-    await this.getStartedButton.click();
-    await this.boardRoom.click();
+    await this.clickSolutionsDropdown();
+    await this.clickMeetingRoomsButton();
+    await this.clickGetStarted();
+    await this.clickBoardRoom();
   }
 }

@@ -8,16 +8,11 @@ test.describe('Dashboard Tests', () => {
 
     await dashboard.goto();
 
-    await expect(dashboard.solutionsDropdown).toBeVisible();
-    await dashboard.solutionsDropdown.click();
-    await dashboard.meetingRoomsButton.click({ force: true });
-    await dashboard.getStartedButton.click();
-    await dashboard.boardRoom.click();
+    await dashboard.clickSolutionsDropdown();
+    await dashboard.clickMeetingRoomsButton();
+    await dashboard.clickGetStarted();
+    await dashboard.clickBoardRoom();
 
-    // const boardRoom = dashboard.getBoardRoom();
-    // await expect(boardRoom).toBeVisible();
-    // await boardRoom.scrollIntoViewIfNeeded();
-    // await boardRoom.click();
   });
 
 });

@@ -7,12 +7,8 @@ test.describe('Room Selection', () => {
     const roomSelection = new RoomSelection(page);
 
     await roomSelection.goto();
-    await roomSelection.selectDate('2025-11-27');
-    await expect(roomSelection.dateInput).toHaveValue('2025-11-27');
-    await roomSelection.timeInput.click();
-    await roomSelection.agreeButton.click();
-    await roomSelection.boardroomCard.click();
-    await roomSelection.continueButton.click(); 
+
+    await roomSelection.completeReservationFlow("berlene.bernabe@kmc.solutions");
   });
 
 });
