@@ -59,19 +59,39 @@ export default defineConfig({
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] }
+      use: {
+        ...devices['Desktop Firefox'],
+        viewport: { width: 1300, height: 600 },
+        headless: false,
+        launchOptions: {} // leave empty
+      }
     },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] }
-    },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] }
+    // },
+
+  {
+    name: 'webkit',
+    use: {
+      ...devices['Desktop Safari'],
+      headless: false, // see the browser UI
+      viewport: { width: 2560, height: 1600 }, 
+      deviceScaleFactor: 2, // Retina scaling
+      isMobile: false, 
+      hasTouch: false,
+      launchOptions: {
+        
+      },
+    }
+  }
 
     /* Test against mobile viewports. */
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-    },
+    // {
+    //   name: 'Mobile Chrome',
+    //   use: { ...devices['Pixel 5'] },
+    // },
     // {
     //   name: 'Mobile Safari',
     //   use: { ...devices['iPhone 12'] },
