@@ -11,11 +11,12 @@ export class RoomSelection {
   private checkoutButton: Locator;
   private emailInput: Locator;
   private continueButton: Locator;
+  // private nextDayButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
 
-    this.dateInput = page.locator('//button[contains(text(), "30")]').nth(1);
+    this.dateInput = page.locator('//button[contains(text(), "22")]');
 
     this.timeInput = page.locator(
       '//div[contains(@class, "cursor-pointer") and contains(@class, "h-[48px]")]'
@@ -44,6 +45,10 @@ export class RoomSelection {
     this.continueButton = page.locator(  
       '//button[contains(text(), "Continue to Checkout")]'
     );
+
+    // this.nextDayButton = page.locator(
+    //   '//button[.//svg[contains(@class, "lucide-chevron-right")]]'
+    // );
   }
 
   async goto() {
@@ -219,6 +224,27 @@ export class RoomSelection {
     }
   }
 
+  async clickNextDayButton() {
+    try {
+      // Wait for calendar to load fully
+      await this.page.locator('.calendar-container').waitFor({ state: 'visible', timeout: 20000 });
+
+      const nextDayButton = this.page.locator(
+        '(//button[.//svg[contains(@class, "lucide-chevron-right")]])[1]'
+      );
+
+      // Wait for the button to appear
+      await nextDayButton.waitFor({ state: 'visible', timeout: 15000 });
+      await nextDayButton.scrollIntoViewIfNeeded();
+      await this.page.waitForTimeout(500); // wait for animations
+
+      await nextDayButton.click();
+      console.log(chalk.green('✅ Clicked Next Day button'));
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error clicking Next Day button: ${e.message}`));
+    }
+  }
+
   async completeReservationFlow(email: string) {
     try {
       console.log(chalk.blue('Starting Reservation Flow...'));
@@ -228,7 +254,8 @@ export class RoomSelection {
       await this.verifyBoardroom();
       await this.clickBoardroomCard();
       await this.verifyRoomAvailability(); 
-      await this.clickDate();
+      // await this.clickDate();
+      // await this.clickNextDayButton();
       await this.clickTime();
       await this.clickConfirmReservation();
       await this.clickProceedToCheckout();

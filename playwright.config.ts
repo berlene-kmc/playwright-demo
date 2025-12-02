@@ -76,9 +76,9 @@ export default defineConfig({
     name: 'webkit',
     use: {
       ...devices['Desktop Safari'],
-      headless: false, // see the browser UI
+      headless: false, 
       viewport: { width: 2560, height: 1600 }, 
-      deviceScaleFactor: 2, // Retina scaling
+      deviceScaleFactor: 2,
       isMobile: false, 
       hasTouch: false,
       launchOptions: {

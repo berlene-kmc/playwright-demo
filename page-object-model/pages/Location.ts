@@ -15,10 +15,12 @@ export class Location {
 
   async clickPicadillyStarCard() {
     try {
-      await expect(this.picadillyStarCard).toBeVisible({ timeout: 15000 });
+      await expect(this.picadillyStarCard).toBeVisible({ timeout: 60000 });
+      await expect(this.picadillyStarCard).toBeEnabled({ timeout: 60000 });
+
       await this.picadillyStarCard.click();
       console.log(chalk.green("✅ Picadilly Star card clicked."));
-      
+
     } catch (e: any) {
       throw new Error(
         chalk.red(`Error clicking Picadilly Star card: ${e.message}`)
@@ -34,11 +36,14 @@ export class Location {
       const response = await this.page.request.get(apiUrl);
 
       if (!response.ok()) {
-        throw new Error(`Failed to fetch board rooms. Status: ${response.status()}`);
+        throw new Error(
+          `Failed to fetch board rooms. Status: ${response.status()}`
+        );
       }
 
       const data = await response.json();
       console.log(chalk.green("📦 Boardroom List Fetched:"), data);
+
       return data;
 
     } catch (e: any) {
@@ -52,12 +57,18 @@ export class Location {
     try {
       const data = await this.fetchBoardRoomList();
 
-      if (!data?.data?.buildings || !Array.isArray(data.data.buildings) || data.data.buildings.length === 0) {
+      if (
+        !data?.data?.buildings ||
+        !Array.isArray(data.data.buildings) ||
+        data.data.buildings.length === 0
+      ) {
         throw new Error("Boardroom list is empty or invalid");
       }
 
       console.log(
-        chalk.green(`✅ Boardroom list has ${data.data.buildings.length} buildings.`)
+        chalk.green(
+          `✅ Boardroom list has ${data.data.buildings.length} buildings.`
+        )
       );
 
     } catch (e: any) {

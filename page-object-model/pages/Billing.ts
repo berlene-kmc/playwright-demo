@@ -1,85 +1,6 @@
-// My Version
-// import { Page, Locator, expect } from '@playwright/test';
-
-// export class Billing {
-//   public page: Page;
-//   public meetingField: Locator;
-//   public firstNameInput: Locator;
-//   public lastNameInput: Locator;
-//   public tinInput: Locator;
-//   public emailInput: Locator;
-//   public numberInput: Locator;
-//   public addressInput: Locator;
-//   public cityInput: Locator;
-//   public stateInput: Locator;
-//   public countryInput: Locator;
-//   public zipCodeInput: Locator;
-//   public checkboxButton: Locator;
-//   public continueButton: Locator;
-
-//   constructor(page: Page) {
-//     this.page = page;
-
-//     this.meetingField = page.locator(
-//       '//input[@id="meetingPurpose"]'
-//     );
-
-//     this.firstNameInput = page.locator(
-//       '//input[@id="firstName"]'
-//     );
-
-//     this.lastNameInput = page.locator(
-//         '//input[@id="lastName"]'
-//     );
-
-//     this.tinInput = page.locator(  
-//         '//input[@id="tin"]'      
-//     );
-
-//     this.emailInput = page.locator(  
-//         '//input[@id="email"]'      
-//     );  
-    
-//     this.numberInput = page.locator(  
-//         '//input[@autocomplete="tel"]'      
-//     );
-
-//     this.addressInput = page.locator(  
-//         '//input[@id="line1"]'      
-//     );
-
-//     this.cityInput = page.locator(  
-//         '//input[@id="city"]'      
-//     );
-
-//     this.stateInput = page.locator(  
-//         '//input[@id="state"]'      
-//     );
-
-//     this.countryInput = page.locator(  
-//         '//input[@id="country"]'      
-//     );
-
-//     this.zipCodeInput = page.locator(  
-//         '//input[@id="zipCode"]'      
-//     );  
-
-//     this.checkboxButton = page.locator(  
-//         '//input[@type="checkbox"]'      
-//     );
-
-//     this.continueButton = page.locator( 
-//         '//button[contains(text(), "Continue")]'      
-//     );
-//   }
-
-//   async goto() {
-//     await this.page.goto('https://alpha-hub.kmc.solutions/guest-booking/3/checkout?bsid=26&roomTypeId=10&am=');
-//   }
-// }
-
-// More Complex Version
 import { Page, Locator, expect } from '@playwright/test';
+import chalk from 'chalk';
+import { BILLING_LOCATORS } from '../utils/billing.locators';
 
 export interface BillingData {
   meetingPurpose: string;
@@ -116,54 +37,84 @@ export class Billing {
   constructor(page: Page) {
     this.page = page;
 
-    this.meetingField = page.locator('//input[@id="meetingPurpose"]');
-    this.firstNameInput = page.locator('//input[@id="firstName"]');
-    this.lastNameInput = page.locator('//input[@id="lastName"]');
-    this.tinInput = page.locator('//input[@id="tin"]');
-    this.emailInput = page.locator('//input[@id="email"]');
-    this.numberInput = page.locator('//input[@autocomplete="tel"]');
-    this.addressInput = page.locator('//input[@id="line1"]');
-    this.cityInput = page.locator('//input[@id="city"]');
-    this.stateInput = page.locator('//input[@id="state"]');
-    this.countryInput = page.locator('//input[@id="country"]');
-    this.zipCodeInput = page.locator('//input[@id="zipCode"]');
-    this.checkboxButton = page.locator('//input[@type="checkbox"]');
-    this.continueButton = page.locator('//button[contains(text(), "Continue")]');
+    this.meetingField = page.locator(BILLING_LOCATORS.MEETING_PURPOSE);
+    this.firstNameInput = page.locator(BILLING_LOCATORS.FIRST_NAME);
+    this.lastNameInput = page.locator(BILLING_LOCATORS.LAST_NAME);
+    this.tinInput = page.locator(BILLING_LOCATORS.TIN);
+    this.emailInput = page.locator(BILLING_LOCATORS.EMAIL);
+    this.numberInput = page.locator(BILLING_LOCATORS.PHONE);
+    this.addressInput = page.locator(BILLING_LOCATORS.ADDRESS);
+    this.cityInput = page.locator(BILLING_LOCATORS.CITY);
+    this.stateInput = page.locator(BILLING_LOCATORS.STATE);
+    this.countryInput = page.locator(BILLING_LOCATORS.COUNTRY);
+    this.zipCodeInput = page.locator(BILLING_LOCATORS.ZIP_CODE);
+    this.checkboxButton = page.locator(BILLING_LOCATORS.AGREE_CHECKBOX);
+    this.continueButton = page.locator(BILLING_LOCATORS.CONTINUE_BUTTON);
   }
 
   async goto() {
     await this.page.goto(
       'https://alpha-hub.kmc.solutions/guest-booking/3/checkout?bsid=26&roomTypeId=10&am='
     );
+    console.log(chalk.green('✅ Navigated to Billing page'));
   }
 
-  async fillBillingForm(data: BillingData) {
-    await this.fillInput(this.meetingField, data.meetingPurpose);
-    await this.fillInput(this.firstNameInput, data.firstName);
-    await this.fillInput(this.lastNameInput, data.lastName);
-    await this.fillInput(this.tinInput, data.tin);
-    await this.fillInput(this.emailInput, data.email);
-    await this.fillInput(this.numberInput, data.phone);
-    await this.fillInput(this.addressInput, data.address);
-    await this.fillInput(this.cityInput, data.city);
-    await this.fillInput(this.stateInput, data.state);
-    await this.fillInput(this.countryInput, data.country);
-    await this.fillInput(this.zipCodeInput, data.zip);
-
-    if (data.agreeTerms) {
-      await this.checkboxButton.check();
+  private async fillInput(locator: Locator, value: string, label: string) {
+    try {
+      await expect(locator).toBeVisible({ timeout: 60000 });
+      await expect(locator).toBeEnabled({ timeout: 60000 });
+      await locator.fill(value);
+      console.log(chalk.green(`✅ Filled ${label}: ${value}`));
+      
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error filling ${label}: ${e.message}`));
     }
   }
 
-  private async fillInput(locator: Locator, value: string) {
-    await locator.waitFor({ state: 'visible' });
-    await locator.fill(value);
+  async fillBillingForm(data: BillingData) {
+    const fields = [
+      { locator: this.meetingField, value: data.meetingPurpose, label: "Meeting Purpose" },
+      { locator: this.firstNameInput, value: data.firstName, label: "First Name" },
+      { locator: this.lastNameInput, value: data.lastName, label: "Last Name" },
+      { locator: this.tinInput, value: data.tin, label: "TIN" },
+      { locator: this.emailInput, value: data.email, label: "Email" },
+      { locator: this.numberInput, value: data.phone, label: "Phone" },
+      { locator: this.addressInput, value: data.address, label: "Address" },
+      { locator: this.cityInput, value: data.city, label: "City" },
+      { locator: this.stateInput, value: data.state, label: "State" },
+      { locator: this.countryInput, value: data.country, label: "Country" },
+      { locator: this.zipCodeInput, value: data.zip, label: "ZIP Code" },
+    ];
+
+    for (const field of fields) {
+      await this.fillInput(field.locator, field.value, field.label);
+    }
+
+    if (data.agreeTerms) {
+      try {
+        await expect(this.checkboxButton).toBeVisible({ timeout: 60000 });
+        await expect(this.checkboxButton).toBeEnabled({ timeout: 60000 });
+        await this.checkboxButton.check();
+        console.log(chalk.green('✅ Checked Agree Terms'));
+
+      } catch (e: any) {
+        throw new Error(chalk.red(`Error checking Agree Terms: ${e.message}`));
+      }
+    }
   }
 
   async clickContinue() {
-    await Promise.all([
-      this.page.waitForNavigation({ url: /confirmation|success|checkout/ }),
-      this.continueButton.click()
-    ]);
+    try {
+      await expect(this.continueButton).toBeVisible({ timeout: 60000 });
+      await expect(this.continueButton).toBeEnabled({ timeout: 60000 });
+      await Promise.all([
+        this.page.waitForNavigation({ url: /confirmation|success|checkout/ }),
+        this.continueButton.click(),
+      ]);
+      console.log(chalk.green('✅ Clicked Continue'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error clicking Continue: ${e.message}`));
+    }
   }
 }
