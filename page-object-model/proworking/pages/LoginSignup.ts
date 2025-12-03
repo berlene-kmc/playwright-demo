@@ -1,7 +1,7 @@
 import { Page, expect, Locator } from '@playwright/test';
 import chalk from 'chalk';
 
-export class LoginPage {
+export class LoginSignupPage {
   private page: Page;
 
   constructor(page: Page) {

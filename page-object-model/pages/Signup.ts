@@ -99,3 +99,4 @@ export class Signup {
     console.log(chalk.green("🎉 Signup Completed Successfully"));
   }
 }
+  

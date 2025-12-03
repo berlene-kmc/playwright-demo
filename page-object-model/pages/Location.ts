@@ -1,12 +1,15 @@
 import { Page, Locator, expect } from "@playwright/test";
 import chalk from "chalk";
+import { AssertEndpoint } from "../utils/assertEndpoint"; 
 
 export class Location {
   private page: Page;
   private picadillyStarCard: Locator;
+  private assertEndpoint: AssertEndpoint;
 
   constructor(page: Page) {
     this.page = page;
+    this.assertEndpoint = new AssertEndpoint(page);
 
     this.picadillyStarCard = page.locator(
       '//figcaption[contains(text(), "Picadilly Star")]'
@@ -76,5 +79,16 @@ export class Location {
         chalk.red(`Boardroom assertion failed: ${e.message}`)
       );
     }
+  }
+
+
+  async clickPicadillyStarCardWithAssertion(endpoint: string) {
+    await this.assertEndpoint.assertEndpoint(
+      endpoint,
+      200,
+      async () => {
+        await this.clickPicadillyStarCard();
+      }
+    );
   }
 }
