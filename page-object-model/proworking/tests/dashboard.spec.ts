@@ -6,12 +6,7 @@ test.describe('Dashboard Tests', () => {
   test('Open user profile and check dashboard button', async ({ dashboard }) => {
     console.log('Test started');
 
-    await dashboard.goto();
-
-    await dashboard.clickSolutionsDropdown();
-    await dashboard.clickProworkingButton();
-    await dashboard.clickGetStarted();
-    await dashboard.clickBoardRoom();
+    await dashboard.goToBoardroomLocation();
 
   });
 

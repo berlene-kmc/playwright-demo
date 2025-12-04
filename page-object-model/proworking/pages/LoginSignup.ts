@@ -67,11 +67,30 @@ export class LoginSignupPage {
       throw new Error(chalk.red(`Error clicking submit button: ${e.message}`));
     }
   }
+
+  ////////////////////////////////////////////////////////////////////////////
+
+  async clickSignupButton() {
+     try {
+      const signupButton = this.page.locator('//a[contains(text(), "Sign up")]');
+      await expect(signupButton).toBeVisible({ timeout: 60000 });
+      await expect(signupButton).toBeEnabled({ timeout: 60000 });
+      await signupButton.click();
+      console.log(chalk.green('✅ Clicked submit button'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error clicking submit button: ${e.message}`));
+    }
+  }
   
   async login(email: string, password: string) {
     await this.fillEmail(email);
     await this.fillPassword(password);
     await this.clickAgree();
     await this.clickSubmit();
+  }
+
+  async signup() {
+
   }
 }

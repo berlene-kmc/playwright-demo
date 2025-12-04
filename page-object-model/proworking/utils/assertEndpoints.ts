@@ -61,4 +61,17 @@ export class AssertEndpoint {
   async finalTestAssert(triggerRequest: () => Promise<void>) {
     await this.assertEndpoint("/api/Hub/login", 200, triggerRequest);
   }
+
+  async assertEndpointOnPage(
+    page: Page,
+    endpoint: string,
+    expectedStatus: number
+  ): Promise<void> {
+    const response = await page.waitForResponse(
+      (res) => res.url().includes(endpoint) && res.status() === expectedStatus,
+      { timeout: 60000 }
+    );
+
+    console.log("✅ API found:", response.url());
+  }
 }
