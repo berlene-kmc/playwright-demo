@@ -76,6 +76,97 @@ export class LoginSignupPage {
       await expect(signupButton).toBeVisible({ timeout: 60000 });
       await expect(signupButton).toBeEnabled({ timeout: 60000 });
       await signupButton.click();
+      console.log(chalk.green('✅ Clicked signup button'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error clicking signup button: ${e.message}`));
+    }
+  }
+
+  async inputEmail(email: string) {
+    try {
+      const emailInput = this.page.locator('//input[@placeholder="name@company.com"]');
+      await expect(emailInput).toBeVisible({ timeout: 60000 });
+      await expect(emailInput).toBeEnabled({ timeout: 60000 });
+      await emailInput.fill(email);
+      console.log(chalk.green(`✅ Filled email: ${email}`));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error filling email input: ${e.message}`));
+    }
+  }
+
+  async inputFirstName(fName: string) {
+     try {
+      const firstNameInput = this.page.locator('//input[@placeholder="First Name"]');
+      await expect(firstNameInput).toBeVisible({ timeout: 60000 });
+      await expect(firstNameInput).toBeEnabled({ timeout: 60000 });
+      await firstNameInput.fill(fName);
+      console.log(chalk.green('✅ Input First Name'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error input first name: ${e.message}`));
+    }
+  }
+
+  async inputLastName(lName: string) {
+     try {
+      const lastNameInput = this.page.locator('//input[@placeholder="Last Name"]');
+      await expect(lastNameInput).toBeVisible({ timeout: 60000 });
+      await expect(lastNameInput).toBeEnabled({ timeout: 60000 });
+      await lastNameInput.fill(lName);
+      console.log(chalk.green('✅ Input Last Name'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error input last name: ${e.message}`));
+    }
+  }
+
+  async inputJobTitle(jobTitle: string) {
+     try {
+      const jobTitleInput = this.page.locator('//input[@placeholder="Job Title"]');
+      await expect(jobTitleInput).toBeVisible({ timeout: 60000 });
+      await expect(jobTitleInput).toBeEnabled({ timeout: 60000 });
+      await jobTitleInput.fill(jobTitle);
+      console.log(chalk.green('✅ Input Job Title '));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error input Job Title: ${e.message}`));
+    }
+  }
+
+  async inputPassword(password: string) {
+     try {
+      const passwordInput = this.page.locator('//input[@name="password"]');
+      await expect(passwordInput).toBeVisible({ timeout: 60000 });
+      await expect(passwordInput).toBeEnabled({ timeout: 60000 });
+      await passwordInput.fill(password);
+      console.log(chalk.green('✅ Input Password'));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error input Password: ${e.message}`));
+    }
+  }
+
+  async inputConfirmPassword(confirmPassword: string) {
+     try {
+      const confirmPasswordInput = this.page.locator('//input[@name="confirmPassword"]');
+      await expect(confirmPasswordInput).toBeVisible({ timeout: 60000 });
+      await expect(confirmPasswordInput).toBeEnabled({ timeout: 60000 });
+      await confirmPasswordInput.fill(confirmPassword);
+      console.log(chalk.green('✅ Input Confirm Password '));
+
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error input Confirm Password: ${e.message}`));
+    }
+  }
+
+  async clickContinue() {
+    try {
+      const continueButton = this.page.locator('//button[@type="submit" and contains(text(), "Continue")]');
+      await expect(continueButton).toBeVisible({ timeout: 60000 });
+      await expect(continueButton).toBeEnabled({ timeout: 60000 });
+      await continueButton.click();
       console.log(chalk.green('✅ Clicked submit button'));
 
     } catch (e: any) {
@@ -90,7 +181,14 @@ export class LoginSignupPage {
     await this.clickSubmit();
   }
 
-  async signup() {
-
+  async signup(email: string, fName: string, lName: string, jobTitle: string, password: string, confirmPass: string) {
+    await this.clickSignupButton();
+    await this.inputEmail(email);
+    await this.inputFirstName(fName);
+    await this.inputLastName(lName);
+    await this.inputJobTitle(jobTitle);
+    await this.inputPassword(password);
+    await this.inputConfirmPassword(confirmPass);
+    await this.clickContinue();
   }
 }

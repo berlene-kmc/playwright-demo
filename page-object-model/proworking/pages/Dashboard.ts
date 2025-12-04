@@ -73,8 +73,6 @@ export class Dashboard {
     await this.clickSolutionsDropdown();
     await this.clickProworkingButton();
     await this.clickGetStarted()
-    await this.page.pause();;
     await this.clickBoardRoom();
-    
   }
 }

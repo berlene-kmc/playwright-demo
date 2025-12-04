@@ -1,16 +1,12 @@
 import { Page, Locator, expect } from "@playwright/test";
 import chalk from "chalk";
-import { AssertEndpoint } from "../utils/assertEndpoints"; 
 
 export class Location {
   private page: Page;
   private picadillyStarCard: Locator;
-  private assertEndpoint: AssertEndpoint;
 
   constructor(page: Page) {
     this.page = page;
-    this.assertEndpoint = new AssertEndpoint(page);
-
     this.picadillyStarCard = page.locator(
       '//figcaption[contains(text(), "Picadilly Star")]'
     );
@@ -23,7 +19,6 @@ export class Location {
 
       await this.picadillyStarCard.click();
       console.log(chalk.green("✅ Picadilly Star card clicked."));
-
     } catch (e: any) {
       throw new Error(
         chalk.red(`Error clicking Picadilly Star card: ${e.message}`)
@@ -31,77 +26,48 @@ export class Location {
     }
   }
 
-  async fetchBoardRoomList(): Promise<any> {
+  // Waits for SPA API response instead of direct request
+  async waitForBoardRoomList(endpoint: string) {
     try {
-      const apiUrl =
-        "https://erp-hub-api-v2-new-checkout.azurewebsites.net/api/hub/buildings/3/packages/proworking";
-
-      const response = await this.page.request.get(apiUrl);
-
-      if (!response.ok()) {
-        throw new Error(
-          `Failed to fetch board rooms. Status: ${response.status()}`
-        );
-      }
+      const response = await this.page.waitForResponse(
+        (res) =>
+          res.url().includes(endpoint) &&
+          res.status() === 200,
+        { timeout: 60000 }
+      );
 
       const data = await response.json();
-      console.log(chalk.green("📦 Boardroom List Fetched:"), data);
+      console.log(chalk.green("📦 Boardroom list fetched from SPA:"), data);
 
       return data;
-
     } catch (e: any) {
       throw new Error(
-        chalk.red(`API Error fetching board rooms: ${e.message}`)
+        chalk.red(`Failed to fetch boardroom list: ${e.message}`)
       );
     }
   }
 
-  async assertBoardRoomList(): Promise<void> {
-    try {
-      const data = await this.fetchBoardRoomList();
+  async assertBoardRoomList(endpoint = "/api/hub/buildings/3/packages/proworking") {
+    const data = await this.waitForBoardRoomList(endpoint);
 
-      if (
-        !data?.data?.buildings ||
-        !Array.isArray(data.data.buildings) ||
-        data.data.buildings.length === 0
-      ) {
-        throw new Error("Boardroom list is empty or invalid");
-      }
-
-      console.log(
-        chalk.green(
-          `✅ Boardroom list has ${data.data.buildings.length} buildings.`
-        )
-      );
-
-    } catch (e: any) {
-      throw new Error(
-        chalk.red(`Boardroom assertion failed: ${e.message}`)
-      );
+    // Safe check for any structure
+    const buildings = data?.data?.buildings || data?.buildings;
+    if (!Array.isArray(buildings) || buildings.length === 0) {
+      throw new Error("Boardroom list is empty or invalid");
     }
+
+    console.log(
+      chalk.green(`✅ Boardroom list has ${buildings.length} buildings.`)
+    );
   }
 
-async assertEndpointOnPage(
-  page: Page,
-  endpoint: string,
-  expectedStatus: number
-): Promise<void> {
-  const response = await page.waitForResponse(
-    (res) => res.url().includes(endpoint) && res.status() === expectedStatus,
-    { timeout: 60000 }
-  );
+  async clickPicadillyStarCardWithAssertion(endpoint: string) {
+    // Click and wait for the SPA response
+    await Promise.all([
+      this.waitForBoardRoomList(endpoint),
+      this.clickPicadillyStarCard(),
+    ]);
 
-  console.log("✅ API found:", response.url());
-}
-
-async clickPicadillyStarCardWithAssertion(endpoint: string) {
-  const [newPage] = await Promise.all([
-    this.page.context().waitForEvent("page"),
-    this.clickPicadillyStarCard(),
-  ]);
-
-  console.log(chalk.green("🆕 New tab opened."));
-
-  await this.assertEndpoint.assertEndpointOnPage(newPage, endpoint, 200);
-}
+    console.log(chalk.green("✅ Picadilly Star clicked and data fetched."));
+  }
 }

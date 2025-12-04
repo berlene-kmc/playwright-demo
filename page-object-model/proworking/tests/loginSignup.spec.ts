@@ -6,21 +6,28 @@ test.describe('Login - UI Only', () => {
     await loginPage.goto();
 
     const email = "berlene.bernabe@kmc.solutions";
-    const password = "Cats09122430!";
+    const password = "1234512345";
+    const confirmPass = "1234512345";
+    const fNAme = "Berlene";
+    const lName = "Bernabe";
+    const jobTitle = "Developer";
 
-    console.log('▶ Filling credentials...');
-    await loginPage.fillEmail(email);
-    await loginPage.fillPassword(password);
+    // console.log('▶ Filling credentials...');
+    // await loginPage.fillEmail(email);
+    // await loginPage.fillPassword(password);
+    // await loginPage.clickAgree();
+
+    // console.log('▶ Clicking submit...');
+    // await loginPage.clickSubmit();
+
+    // console.log('✅ Submit clicked. Test stops here, no dashboard navigation.');
+
+    // // Close page immediately to prevent further loading
+    // await page.close();
+    // console.log('✅ Browser page closed.');
+
     await loginPage.clickAgree();
-
-    console.log('▶ Clicking submit...');
-    await loginPage.clickSubmit();
-
-    console.log('✅ Submit clicked. Test stops here, no dashboard navigation.');
-
-    // Close page immediately to prevent further loading
-    await page.close();
-    console.log('✅ Browser page closed.');
+    await loginPage.signup(email, fNAme, lName, jobTitle, password, confirmPass);
   });
 
 });
