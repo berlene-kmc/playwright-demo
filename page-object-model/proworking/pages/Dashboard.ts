@@ -75,4 +75,28 @@ export class Dashboard {
     await this.clickGetStarted()
     await this.clickBoardRoom();
   }
+
+  async waitForProworkingPremiumListAPI() {
+    const apiUrl = 'https://erp-hub-api-v2-new-checkout.azurewebsites.net/api/hub/buildings/packages/proworking-premium/list';
+    console.log(chalk.cyan(`🔍 Waiting for API: ${apiUrl}`));
+    
+    try {
+      const response = await this.page.waitForResponse(
+        (response) => {
+          const url = response.url();
+          if (url.includes(apiUrl)) {
+            console.log(chalk.green(`✅ API Response captured: ${url} - Status: ${response.status()}`));
+            return true;
+          }
+          return false;
+        },
+        { timeout: 60000 }
+      );
+      console.log(chalk.green(`✅ Proworking Premium List API call successful - Status: ${response.status()}`));
+      return response;
+    } catch (e: any) {
+      console.log(chalk.red(`❌ Failed to capture API response: ${e.message}`));
+      throw e;
+    }
+  }
 }
