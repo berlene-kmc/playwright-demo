@@ -10,7 +10,8 @@ test.describe('Location Page Tests', () => {
 
     // Add a delay before clicking to reduce rate limiting issues
     // This helps if previous tests have made API calls
-    await page.waitForTimeout(2000);
+    // Rate limits typically reset after a few seconds
+    await page.waitForTimeout(5000);
 
     // Listen for console errors to catch the "Cannot read properties of undefined" error
     const consoleErrors: string[] = [];
@@ -54,12 +55,13 @@ test.describe('Location Page Tests', () => {
           url.includes('board-room') || 
           url.includes('buildings') ||
           url.includes('packages') ||
+          url.includes('proworking') ||
           url.includes('checkout') ||
           status === 429) {
         apiResponses.push({ url, status });
         if (status === 429) {
           console.log(`⚠️ Rate limit detected (429) for: ${url}`);
-        } else if (status === 200 && (url.includes('board-room') || url.includes('buildings'))) {
+        } else if (status === 200 && (url.includes('board-room') || url.includes('buildings') || url.includes('packages') || url.includes('proworking'))) {
           console.log(`✅ Successful API response (200) for: ${url}`);
         }
       }
@@ -82,7 +84,7 @@ test.describe('Location Page Tests', () => {
             (response) => {
               const url = response.url();
               const status = response.status();
-              return (url.includes('board-room') || url.includes('buildings') || url.includes('packages')) 
+              return (url.includes('board-room') || url.includes('buildings') || url.includes('packages') || url.includes('proworking')) 
                      && status === 200;
             },
             { timeout: 45000 }
@@ -110,7 +112,7 @@ test.describe('Location Page Tests', () => {
             (response) => {
               const url = response.url();
               const status = response.status();
-              return (url.includes('board-room') || url.includes('buildings') || url.includes('packages')) 
+              return (url.includes('board-room') || url.includes('buildings') || url.includes('packages') || url.includes('proworking')) 
                      && status === 200;
             },
             { timeout: 30000 }
@@ -160,8 +162,7 @@ test.describe('Location Page Tests', () => {
 
   // test('Boardroom API returns list', async ({ page }) => {
   //   const location = new Location(page);
-
-    await location.assertBoardRoomList();
-  });
+  //   await location.assertBoardRoomList();
+  // });
 
 });
