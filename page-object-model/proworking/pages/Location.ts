@@ -1,12 +1,16 @@
 import { Page, Locator, expect } from "@playwright/test";
 import chalk from "chalk";
+import { AssertEndpoint } from "../utils/assertEndpoints";
 
 export class Location {
   private page: Page;
   private picadillyStarCard: Locator;
+  private assertEndpoint: AssertEndpoint;
 
   constructor(page: Page) {
     this.page = page;
+    this.assertEndpoint = new AssertEndpoint(page);
+
     this.picadillyStarCard = page.locator(
       '//figcaption[contains(text(), "Picadilly Star")]'
     );
@@ -26,48 +30,55 @@ export class Location {
     }
   }
 
-  // Waits for SPA API response instead of direct request
-  async waitForBoardRoomList(endpoint: string) {
-    try {
-      const response = await this.page.waitForResponse(
-        (res) =>
-          res.url().includes(endpoint) &&
-          res.status() === 200,
-        { timeout: 60000 }
-      );
+//  async fetchBoardRoomList(): Promise<any> {
+//   try {
+//     // Get the base URL from the current page
+//     const baseUrl = this.page.url().split('/').slice(0, 3).join('/');
+//     const apiUrl = `${baseUrl}/api/hub/buildings/packages/board-room/list`;
+    
+//     // Use page.request.get instead of evaluate with fetch for better reliability
+//     const response = await this.page.request.get(apiUrl);
 
-      const data = await response.json();
-      console.log(chalk.green("📦 Boardroom list fetched from SPA:"), data);
+//     if (!response.ok()) {
+//       throw new Error(`Failed to fetch board rooms. Status: ${response.status()}`);
+//     }
 
-      return data;
-    } catch (e: any) {
-      throw new Error(
-        chalk.red(`Failed to fetch boardroom list: ${e.message}`)
-      );
-    }
-  }
+//     const data = await response.json();
+//     console.log('📦 Boardroom List Fetched:', data);
+//     return data;
+//   } catch (e: any) {
+//     throw new Error(`API Error fetching board rooms: ${e.message}`);
+//   }
+// }
 
-  async assertBoardRoomList(endpoint = "/api/hub/buildings/3/packages/proworking") {
-    const data = await this.waitForBoardRoomList(endpoint);
+  // async assertBoardRoomList(): Promise<void> {
+  //   try {
+  //     const data = await this.fetchBoardRoomList();
 
-    // Safe check for any structure
-    const buildings = data?.data?.buildings || data?.buildings;
-    if (!Array.isArray(buildings) || buildings.length === 0) {
-      throw new Error("Boardroom list is empty or invalid");
-    }
+  //     // Safely handle different API response structures
+  //     const buildings = data?.buildings || data?.data?.buildings;
 
-    console.log(
-      chalk.green(`✅ Boardroom list has ${buildings.length} buildings.`)
-    );
-  }
+  //     if (!buildings || !Array.isArray(buildings) || buildings.length === 0) {
+  //       throw new Error("Boardroom list is empty or invalid");
+  //     }
 
-  async clickPicadillyStarCardWithAssertion(endpoint: string) {
-    // Click and wait for the SPA response
-    await Promise.all([
-      this.waitForBoardRoomList(endpoint),
-      this.clickPicadillyStarCard(),
-    ]);
+  //     console.log(
+  //       chalk.green(`✅ Boardroom list has ${buildings.length} buildings.`)
+  //     );
+  //   } catch (e: any) {
+  //     throw new Error(
+  //       chalk.red(`Boardroom assertion failed: ${e.message}`)
+  //     );
+  //   }
+  // }
 
-    console.log(chalk.green("✅ Picadilly Star clicked and data fetched."));
-  }
+  // async clickPicadillyStarCardWithAssertion(endpoint: string) {
+  //   await this.assertEndpoint.assertEndpoint(
+  //     endpoint,
+  //     200,
+  //     async () => {
+  //       await this.clickPicadillyStarCard();
+  //     }
+  //   );
+  // }
 }
