@@ -94,6 +94,7 @@ export class Dashboard {
       );
       console.log(chalk.green(`✅ Proworking Premium List API call successful - Status: ${response.status()}`));
       return response;
+      
     } catch (e: any) {
       console.log(chalk.red(`❌ Failed to capture API response: ${e.message}`));
       throw e;
