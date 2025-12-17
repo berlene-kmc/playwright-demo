@@ -15,7 +15,6 @@ test.describe('Full KMC E2E Flow', () => {
     assertEndpoint
   }) => {
 
-    // 1️⃣ Signup
     const signup = new Signup(page);
     await page.goto('https://kmc-hub-git-feat-new-checkout-kmc-dev-team.vercel.app/auth/sign-up');
     await signup.completeSignup(
@@ -27,7 +26,6 @@ test.describe('Full KMC E2E Flow', () => {
       'StrongPassword123!'
     );
 
-    // 2️⃣ Login with API Assertion
     await loginPage.goto();
     await assertEndpoint.assertEndpoint(
       "/api/Hub/login",
@@ -37,24 +35,21 @@ test.describe('Full KMC E2E Flow', () => {
       }
     );
 
-    // 3️⃣ Dashboard → Boardroom
     await dashboard.goto();
     await dashboard.clickSolutionsDropdown();
     await dashboard.clickMeetingRoomsButton();
     await dashboard.clickGetStarted();
     await dashboard.clickBoardRoom();
 
-    // 4️⃣ Location → Picadilly Star Card + API Assertion
     const location = new Location(page);
     await dashboard.goToBoardroomLocation();
     const [newPage] = await Promise.all([
-      page.context().waitForEvent('page'), // handle new page if opens
+      page.context().waitForEvent('page'), 
       location.clickPicadillyStarCardWithAssertion(
         '/api/hub/buildings/packages/board-room/list'
       )
     ]);
 
-    // 5️⃣ Room Selection → Complete Reservation Flow + API Assertion
     const roomSelection = new RoomSelection(newPage);
     await roomSelection.goto();
     await assertEndpoint.assertEndpoint(
@@ -65,7 +60,6 @@ test.describe('Full KMC E2E Flow', () => {
       }
     );
 
-    // 6️⃣ Billing → Fill Form & Continue
     const billing = new Billing(newPage);
     await billing.goto();
 

@@ -1,11 +1,44 @@
 import { Page, expect, Locator } from '@playwright/test';
 import chalk from 'chalk';
+import { LOGIN_SIGNUP_LOCATORS } from '../utils/loginSignup.locators';
 
 export class LoginSignupPage {
   private page: Page;
+  public emailInput: Locator;
+  public passwordInput: Locator;
+  public agreeButton: Locator;
+  public submitButton: Locator;
+  public signupButton: Locator;
+  public signupEmailInput: Locator;
+  public firstNameInput: Locator;
+  public lastNameInput: Locator;
+  public jobTitleInput: Locator;
+  public signupPasswordInput: Locator;
+  public confirmPasswordInput: Locator;
+  public continueButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
+    
+    const locators = [
+      { key: 'emailInput', selector: LOGIN_SIGNUP_LOCATORS.EMAIL },
+      { key: 'passwordInput', selector: LOGIN_SIGNUP_LOCATORS.PASSWORD },
+      { key: 'agreeButton', selector: LOGIN_SIGNUP_LOCATORS.AGREE_BUTTON },
+      { key: 'submitButton', selector: LOGIN_SIGNUP_LOCATORS.SUBMIT_BUTTON },
+      { key: 'signupButton', selector: LOGIN_SIGNUP_LOCATORS.SIGNUP_BUTTON },
+      { key: 'signupEmailInput', selector: LOGIN_SIGNUP_LOCATORS.SIGNUP_EMAIL },
+      { key: 'firstNameInput', selector: LOGIN_SIGNUP_LOCATORS.FIRST_NAME },
+      { key: 'lastNameInput', selector: LOGIN_SIGNUP_LOCATORS.LAST_NAME },
+      { key: 'jobTitleInput', selector: LOGIN_SIGNUP_LOCATORS.JOB_TITLE },
+      { key: 'signupPasswordInput', selector: LOGIN_SIGNUP_LOCATORS.SIGNUP_PASSWORD },
+      { key: 'confirmPasswordInput', selector: LOGIN_SIGNUP_LOCATORS.CONFIRM_PASSWORD },
+      { key: 'continueButton', selector: LOGIN_SIGNUP_LOCATORS.CONTINUE_BUTTON },
+    ];
+
+    for (let i = 0; i < locators.length; i++) {
+      const locator = locators[i];
+      (this as any)[locator.key] = page.locator(locator.selector);
+    }
   }
 
   async goto() {
@@ -13,182 +46,114 @@ export class LoginSignupPage {
     console.log(chalk.green('✅ Navigated to login page'));
   }
 
-  async fillEmail(email: string) {
+  private async fillInput(locator: Locator, value: string, label: string) {
     try {
-      const emailInput = this.page.locator(
-        '//input[@type="email" or contains(@placeholder, "mail") or @name="email"]'
-      );
-
-      await expect(emailInput).toBeVisible({ timeout: 60000 });
-      await expect(emailInput).toBeEnabled({ timeout: 60000 });
-      await emailInput.fill(email);
-      console.log(chalk.green(`✅ Filled email: ${email}`));
-
+      await expect(locator).toBeVisible({ timeout: 60000 });
+      await expect(locator).toBeEnabled({ timeout: 60000 });
+      await locator.fill(value);
+      console.log(chalk.green(`✅ Filled ${label}: ${value}`));
     } catch (e: any) {
-      throw new Error(chalk.red(`Error filling email input: ${e.message}`));
+      throw new Error(chalk.red(`Error filling ${label}: ${e.message}`));
     }
   }
 
-  async fillPassword(password: string) {
-    try {
-      const passwordInput = this.page.locator('//input[@type="password"]');
-      await expect(passwordInput).toBeVisible({ timeout: 60000 });
-      await expect(passwordInput).toBeEnabled({ timeout: 60000 });
-      await passwordInput.fill(password);
-      console.log(chalk.green(`✅ Filled password`));
+  async fillEmail(email: string) {
+    await this.fillInput(this.emailInput, email, 'email');
+  }
 
+  async fillPassword(password: string) {
+    await this.fillInput(this.passwordInput, password, 'password');
+  }
+
+  private async clickButton(locator: Locator, buttonName: string) {
+    try {
+      await expect(locator).toBeVisible({ timeout: 60000 });
+      await expect(locator).toBeEnabled({ timeout: 60000 });
+      await locator.click();
+      console.log(chalk.green(`✅ Clicked ${buttonName}`));
     } catch (e: any) {
-      throw new Error(chalk.red(`Error filling password input: ${e.message}`));
+      throw new Error(chalk.red(`Error clicking ${buttonName}: ${e.message}`));
     }
   }
 
   async clickAgree() {
-    try {
-      const agreeButton = this.page.locator('//a[@id="hs-eu-confirmation-button" and contains(text(), "Accept")]');
-      await expect(agreeButton).toBeVisible({ timeout: 60000 });
-      await expect(agreeButton).toBeEnabled({ timeout: 60000 });
-      await agreeButton.click();
-      console.log(chalk.green('✅ Clicked agree button'));
-
-    } catch (e: any) {
-      throw new Error(chalk.red(`Error clicking agree button: ${e.message}`));
-    }
+    await this.clickButton(this.agreeButton, 'agree button');
   }
 
   async clickSubmit() {
-    try {
-      const submitButton = this.page.locator('//button[@type="submit"]');
-      await expect(submitButton).toBeVisible({ timeout: 60000 });
-      await expect(submitButton).toBeEnabled({ timeout: 60000 });
-      await submitButton.click();
-      console.log(chalk.green('✅ Clicked submit button'));
-
-    } catch (e: any) {
-      throw new Error(chalk.red(`Error clicking submit button: ${e.message}`));
-    }
+    await this.clickButton(this.submitButton, 'submit button');
   }
 
   ////////////////////////////////////////////////////////////////////////////
 
   async clickSignupButton() {
-     try {
-      const signupButton = this.page.locator('//a[contains(text(), "Sign up")]');
-      await expect(signupButton).toBeVisible({ timeout: 60000 });
-      await expect(signupButton).toBeEnabled({ timeout: 60000 });
-      await signupButton.click();
-      console.log(chalk.green('✅ Clicked signup button'));
-
-    } catch (e: any) {
-      throw new Error(chalk.red(`Error clicking signup button: ${e.message}`));
-    }
+    await this.clickButton(this.signupButton, 'signup button');
   }
 
   async inputEmail(email: string) {
-    try {
-      const emailInput = this.page.locator('//input[@placeholder="name@company.com"]');
-      await expect(emailInput).toBeVisible({ timeout: 60000 });
-      await expect(emailInput).toBeEnabled({ timeout: 60000 });
-      await emailInput.fill(email);
-      console.log(chalk.green(`✅ Filled email: ${email}`));
-
-    } catch (e: any) {
-      throw new Error(chalk.red(`Error filling email input: ${e.message}`));
-    }
+    await this.fillInput(this.signupEmailInput, email, 'signup email');
   }
 
   async inputFirstName(fName: string) {
-     try {
-      const firstNameInput = this.page.locator('//input[@placeholder="First Name"]');
-      await expect(firstNameInput).toBeVisible({ timeout: 60000 });
-      await expect(firstNameInput).toBeEnabled({ timeout: 60000 });
-      await firstNameInput.fill(fName);
-      console.log(chalk.green('✅ Input First Name'));
-
-    } catch (e: any) {
-      throw new Error(chalk.red(`Error input first name: ${e.message}`));
-    }
+    await this.fillInput(this.firstNameInput, fName, 'First Name');
   }
 
   async inputLastName(lName: string) {
-     try {
-      const lastNameInput = this.page.locator('//input[@placeholder="Last Name"]');
-      await expect(lastNameInput).toBeVisible({ timeout: 60000 });
-      await expect(lastNameInput).toBeEnabled({ timeout: 60000 });
-      await lastNameInput.fill(lName);
-      console.log(chalk.green('✅ Input Last Name'));
-
-    } catch (e: any) {
-      throw new Error(chalk.red(`Error input last name: ${e.message}`));
-    }
+    await this.fillInput(this.lastNameInput, lName, 'Last Name');
   }
 
   async inputJobTitle(jobTitle: string) {
-     try {
-      const jobTitleInput = this.page.locator('//input[@placeholder="Job Title"]');
-      await expect(jobTitleInput).toBeVisible({ timeout: 60000 });
-      await expect(jobTitleInput).toBeEnabled({ timeout: 60000 });
-      await jobTitleInput.fill(jobTitle);
-      console.log(chalk.green('✅ Input Job Title '));
-
-    } catch (e: any) {
-      throw new Error(chalk.red(`Error input Job Title: ${e.message}`));
-    }
+    await this.fillInput(this.jobTitleInput, jobTitle, 'Job Title');
   }
 
   async inputPassword(password: string) {
-     try {
-      const passwordInput = this.page.locator('//input[@name="password"]');
-      await expect(passwordInput).toBeVisible({ timeout: 60000 });
-      await expect(passwordInput).toBeEnabled({ timeout: 60000 });
-      await passwordInput.fill(password);
-      console.log(chalk.green('✅ Input Password'));
-
-    } catch (e: any) {
-      throw new Error(chalk.red(`Error input Password: ${e.message}`));
-    }
+    await this.fillInput(this.signupPasswordInput, password, 'Password');
   }
 
   async inputConfirmPassword(confirmPassword: string) {
-     try {
-      const confirmPasswordInput = this.page.locator('//input[@name="confirmPassword"]');
-      await expect(confirmPasswordInput).toBeVisible({ timeout: 60000 });
-      await expect(confirmPasswordInput).toBeEnabled({ timeout: 60000 });
-      await confirmPasswordInput.fill(confirmPassword);
-      console.log(chalk.green('✅ Input Confirm Password '));
-
-    } catch (e: any) {
-      throw new Error(chalk.red(`Error input Confirm Password: ${e.message}`));
-    }
+    await this.fillInput(this.confirmPasswordInput, confirmPassword, 'Confirm Password');
   }
 
   async clickContinue() {
-    try {
-      const continueButton = this.page.locator('//button[@type="submit" and contains(text(), "Continue")]');
-      await expect(continueButton).toBeVisible({ timeout: 60000 });
-      await expect(continueButton).toBeEnabled({ timeout: 60000 });
-      await continueButton.click();
-      console.log(chalk.green('✅ Clicked submit button'));
-
-    } catch (e: any) {
-      throw new Error(chalk.red(`Error clicking submit button: ${e.message}`));
-    }
+    await this.clickButton(this.continueButton, 'Continue button');
   }
   
   async login(email: string, password: string) {
-    await this.fillEmail(email);
-    await this.fillPassword(password);
-    await this.clickAgree();
-    await this.clickSubmit();
+    const loginFields = [
+      { locator: this.emailInput, value: email, label: 'email' },
+      { locator: this.passwordInput, value: password, label: 'password' },
+    ];
+
+    for (const field of loginFields) {
+      await this.fillInput(field.locator, field.value, field.label);
+    }
+
+    const buttons = [
+      { locator: this.agreeButton, name: 'agree button' },
+      { locator: this.submitButton, name: 'submit button' },
+    ];
+
+    for (const button of buttons) {
+      await this.clickButton(button.locator, button.name);
+    }
   }
 
   async signup(email: string, fName: string, lName: string, jobTitle: string, password: string, confirmPass: string) {
     await this.clickSignupButton();
-    await this.inputEmail(email);
-    await this.inputFirstName(fName);
-    await this.inputLastName(lName);
-    await this.inputJobTitle(jobTitle);
-    await this.inputPassword(password);
-    await this.inputConfirmPassword(confirmPass);
+    
+    const signupFields = [
+      { method: () => this.inputFirstName(fName), label: 'First Name' },
+      { method: () => this.inputLastName(lName), label: 'Last Name' },
+      { method: () => this.inputEmail(email), label: 'Email' },
+      { method: () => this.inputJobTitle(jobTitle), label: 'Job Title' },
+      { method: () => this.inputPassword(password), label: 'Password' },
+      { method: () => this.inputConfirmPassword(confirmPass), label: 'Confirm Password' },
+    ];
+
+    for (const field of signupFields) {
+      await field.method();
+    }
+    
     await this.clickContinue();
   }
 }

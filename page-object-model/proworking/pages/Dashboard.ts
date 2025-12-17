@@ -1,11 +1,43 @@
-import { Page, expect } from '@playwright/test';
+import { Page, expect, Locator } from '@playwright/test';
 import chalk from 'chalk';
+import { DASHBOARD_LOCATORS } from '../utils/dashboard.locators';
 
 export class Dashboard {
   private page: Page;
+  public solutionsDropdown: Locator;
+  public proworkingButton: Locator;
+  public getStartedButton: Locator;
+  public boardRoomButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
+
+    const locators = [
+      { key: 'solutionsDropdown', selector: DASHBOARD_LOCATORS.SOLUTIONS_DROPDOWN },
+      { key: 'proworkingButton', selector: DASHBOARD_LOCATORS.PROWORKING_BUTTON },
+      { key: 'getStartedButton', selector: DASHBOARD_LOCATORS.GET_STARTED_BUTTON },
+      { key: 'boardRoomButton', selector: DASHBOARD_LOCATORS.BOARD_ROOM_BUTTON },
+    ];
+
+    for (let i = 0; i < locators.length; i++) {
+      const locator = locators[i];
+      if (locator.key === 'boardRoomButton') {
+        (this as any)[locator.key] = page.locator(locator.selector).nth(2);
+      } else {
+        (this as any)[locator.key] = page.locator(locator.selector);
+      }
+    }
+  }
+
+  private async clickButton(locator: Locator, buttonName: string) {
+    try {
+      await expect(locator).toBeVisible({ timeout: 60000 });
+      await expect(locator).toBeEnabled({ timeout: 60000 });
+      await locator.click();
+      console.log(chalk.green(`✅ Clicked ${buttonName}`));
+    } catch (e: any) {
+      throw new Error(chalk.red(`Error clicking ${buttonName}: ${e.message}`));
+    }
   }
 
   async goto() {
@@ -14,58 +46,26 @@ export class Dashboard {
   }
 
   async clickSolutionsDropdown() {
-    try {
-      const solutionsDropdown = this.page.locator('//button[.//span[contains(text(), "Solutions")]]');
-      await expect(solutionsDropdown).toBeVisible({ timeout: 60000 });
-      await expect(solutionsDropdown).toBeEnabled({ timeout: 60000 });
-      await solutionsDropdown.click();
-      console.log(chalk.green('✅ Clicked Solutions dropdown'));
-
-    } catch (e: any) {
-      throw new Error(chalk.red(`Error clicking Solutions dropdown: ${e.message}`));
-    }
+    await this.clickButton(this.solutionsDropdown, 'Solutions dropdown');
   }
 
   async clickProworkingButton() {
     try {
-      const meetingRoomsButton = this.page.locator(
-        '//a[@href="/proworking" and .//span[contains(text(), "Proworking")]]'
-      );
-
-      await expect(meetingRoomsButton).toBeVisible({ timeout: 60000 });
-      await expect(meetingRoomsButton).toBeEnabled({ timeout: 60000 });
-      await meetingRoomsButton.click({ force: true });
+      await expect(this.proworkingButton).toBeVisible({ timeout: 60000 });
+      await expect(this.proworkingButton).toBeEnabled({ timeout: 60000 });
+      await this.proworkingButton.click({ force: true });
       console.log(chalk.green('✅ Clicked Meeting Rooms button'));
-
     } catch (e: any) {
       throw new Error(chalk.red(`Error clicking Meeting Rooms button: ${e.message}`));
     }
   }
 
   async clickGetStarted() {
-    try {
-      const getStartedButton = this.page.locator('//div[@class="mt-8"]');
-      await expect(getStartedButton).toBeVisible({ timeout: 60000 });
-      await expect(getStartedButton).toBeEnabled({ timeout: 60000 });
-      await getStartedButton.click();
-      console.log(chalk.green('✅ Clicked Get Started button'));
-
-    } catch (e: any) {
-      throw new Error(chalk.red(`Error clicking Get Started button: ${e.message}`));
-    }
+    await this.clickButton(this.getStartedButton, 'Get Started button');
   }
 
   async clickBoardRoom() {
-    try {
-      const boardRoom = this.page.locator('//button[contains(.,\'Get Started\')]').nth(2);
-      await expect(boardRoom).toBeVisible({ timeout: 60000 });
-      await expect(boardRoom).toBeEnabled({ timeout: 60000 });
-      await boardRoom.click();
-      console.log(chalk.green('✅ Clicked Board Room button'));
-
-    } catch (e: any) {
-      throw new Error(chalk.red(`Error clicking Board Room button: ${e.message}`));
-    }
+    await this.clickButton(this.boardRoomButton, 'Board Room button');
   }
 
   async goToBoardroomLocation() {

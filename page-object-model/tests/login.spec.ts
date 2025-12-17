@@ -18,7 +18,6 @@ test.describe('Login - UI Only', () => {
 
     console.log('✅ Submit clicked. Test stops here, no dashboard navigation.');
 
-    // Close page immediately to prevent further loading
     await page.close();
     console.log('✅ Browser page closed.');
   });
